@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up – Kisan AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --soil:        #1E1209;
+            --bark:        #4A2C10;
+            --wheat:       #C9933A;
+            --wheat-light: #F5E8CC;
+            --sprout:      #3D7035;
+            --leaf:        #5A9E46;
+            --leaf-light:  #D4EDCA;
+            --cream:       #FAF6EF;
+            --mist:        #F0EAE0;
+            --border:      rgba(74,44,16,0.12);
+            --text:        #1A1008;
+            --muted:       #8A7260;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: var(--cream);
+            color: var(--text);
+        }
+
+        /* ── LEFT PANEL ── */
+        .left-panel {
+            width: 340px;
+            flex-shrink: 0;
+            background: var(--soil);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60')
+                        center/cover no-repeat;
+            opacity: 0.2;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(170deg, rgba(30,18,9,0.8) 0%, rgba(61,112,53,0.45) 100%);
+        }
+
+        .left-z { position: relative; z-index: 2; }
+
+        .left-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 40px; height: 40px;
+            background: var(--sprout);
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 17px;
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: white;
+        }
+        .brand-name span { color: var(--wheat); }
+
+        .left-body { position: relative; z-index: 2; }
+
+        .left-body h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 14px;
+        }
+
+        .left-body h2 em { font-style: normal; color: var(--wheat); }
+
+        .left-body p {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.88rem;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 32px;
+        }
+
+        /* Step indicators */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        .step-item:last-child { padding-bottom: 0; }
+
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 32px;
+            width: 1px;
+            height: calc(100% - 32px);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .step-num {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.5);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .step-num.active {
+            background: var(--sprout);
+            border-color: var(--sprout);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(90,158,70,0.2);
+        }
+
+        .step-num.done {
+            background: rgba(90,158,70,0.2);
+            border-color: rgba(90,158,70,0.4);
+            color: #9dd584;
+        }
+
+        .step-text .step-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.3;
+            padding-top: 5px;
+        }
+
+        .step-text .step-desc {
+            font-size: 0.74rem;
+            color: rgba(255,255,255,0.35);
+            margin-top: 2px;
+        }
+
+        .left-footer {
+            position: relative;
+            z-index: 2;
+            color: rgba(255,255,255,0.2);
+            font-size: 0.73rem;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 48px 40px;
+            overflow-y: auto;
+        }
+
+        .form-card {
+            width: 100%;
+            max-width: 580px;
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--soil);
+            margin-bottom: 6px;
+        }
+
+        .form-header p {
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-weight: 300;
+        }
+
+        /* Progress bar */
+        .progress-bar-wrap {
+            height: 4px;
+            background: var(--mist);
+            border-radius: 100px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sprout), var(--wheat));
+            border-radius: 100px;
+            transition: width 0.5s ease;
+        }
+
+        /* Section headings */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 28px 0 20px;
+        }
+
+        .section-divider:first-of-type { margin-top: 0; }
+
+        .section-divider-icon {
+            width: 30px; height: 30px;
+            background: var(--leaf-light);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--sprout);
+            font-size: 0.78rem;
+            flex-shrink: 0;
+        }
+
+        .section-divider-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--bark);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .section-divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Form grid */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .form-row.single { grid-template-columns: 1fr; }
+
+        .field-group { display: flex; flex-direction: column; }
+
+        .field-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--bark);
+            margin-bottom: 7px;
+            letter-spacing: 0.2px;
+        }
+
+        .field-label .req { color: var(--leaf); margin-left: 2px; }
+
+        .field-wrap { position: relative; }
+
+        .field-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.8rem;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .field-input,
+        .field-select {
+            width: 100%;
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 11px;
+            padding: 11px 13px 11px 38px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .field-input::placeholder { color: rgba(138,114,96,0.45); }
+
+        .field-input:focus,
+        .field-select:focus {
+            border-color: var(--sprout);
+            box-shadow: 0 0 0 3px rgba(61,112,53,0.1);
+        }
+
+        .field-wrap:focus-within .field-icon { color: var(--sprout); }
+
+        /* Select arrow */
+        .select-arrow {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.75rem;
+            pointer-events: none;
+        }
+
+        /* Password toggle */
+        .pwd-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 0.8rem;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .pwd-toggle:hover { color: var(--sprout); }
+
+        /* Flash */
+        .flash-msg {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #FFF8E7;
+            border: 1px solid #F0C040;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            font-size: 0.83rem;
+            color: #7B5800;
+            animation: fadeDown 0.3s ease;
+        }
+        .flash-msg i { color: #C9933A; flex-shrink: 0; margin-top: 1px; }
+        .flash-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #B7770D;
+            font-size: 0.78rem;
+            padding: 0;
+        }
+
+        /* Submit */
+        .btn-submit {
+            width: 100%;
+            background: var(--sprout);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 28px;
+            box-shadow: 0 4px 16px rgba(61,112,53,0.22);
+        }
+
+        .btn-submit:hover {
+            background: #2f5a28;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(61,112,53,0.3);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.84rem;
+            color: var(--muted);
+        }
+
+        .form-footer a {
+            color: var(--sprout);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover { text-decoration: underline; }
+
+        /* Optional badge */
+        .optional-badge {
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--muted);
+            background: var(--mist);
+            padding: 2px 7px;
+            border-radius: 100px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 860px) {
+            .left-panel { display: none; }
+            .right-panel { padding: 36px 24px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .right-panel { padding: 28px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT -->
+    <div class="left-panel">
+        <a href="/" class="left-brand left-z">
+            <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+            <span class="brand-name">Kisan <span>AI</span></span>
+        </a>
+
+        <div class="left-body">
+            <h2>Start your<br><em>smart farm</em><br>journey.</h2>
+            <p>Fill in a few details about yourself and your farm — we'll use these to give you advice that's truly personalised.</p>
+
+            <div class="steps">
+                <div class="step-item">
+                    <div class="step-num active" id="s1">1</div>
+                    <div class="step-text">
+                        <div class="step-title">Your Account</div>
+                        <div class="step-desc">Name, email & password</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num" id="s2">2</div>
+                    <div class="step-text">
+                        <div class="step-title">Farm Details</div>
+                        <div class="step-desc">Location, size & soil type</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num" id="s3">3</div>
+                    <div class="step-text">
+                        <div class="step-title">Crop History</div>
+                        <div class="step-desc">Previous crop & water source</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="left-footer left-z">© 2025 Kisan AI</div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+        <div class="form-card">
+
+            <div class="form-header">
+                <h1>Create your account</h1>
+                <p>Join thousands of farmers already using Kisan AI</p>
+            </div>
+
+            <!-- Progress -->
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressFill" style="width: 10%"></div>
+            </div>
+
+            <!-- Flash messages (Jinja2) -->
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="flash-msg" id="flash-{{ loop.index }}">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ message }}</span>
+                    <button class="flash-close" onclick="document.getElementById('flash-{{ loop.index }}').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/signup" method="POST" id="signupForm">
+
+                <!-- Section 1: Account -->
+                <div class="section-divider">
+                    <div class="section-divider-icon"><i class="fas fa-user"></i></div>
+                    <span class="section-divider-title">Your Account</span>
+                    <div class="section-divider-line"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label" for="name">Full Name <span class="req">*</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-user field-icon"></i>
+                            <input class="field-input" type="text" id="name" name="name" placeholder="Ramesh Kumar" required />
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" for="email">Email <span class="req">*</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-envelope field-icon"></i>
+                            <input class="field-input" type="email" id="email" name="email" placeholder="you@example.com" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label" for="password">Password <span class="req">*</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-lock field-icon"></i>
+                            <input class="field-input" type="password" id="password" name="password" placeholder="Create a password" required />
+                            <button type="button" class="pwd-toggle" id="pwdToggle" tabindex="-1">
+                                <i class="fas fa-eye" id="pwdIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" for="phone">Phone <span class="optional-badge">optional</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-phone field-icon"></i>
+                            <input class="field-input" type="text" id="phone" name="phone" placeholder="+91 98765 43210" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Farm -->
+                <div class="section-divider">
+                    <div class="section-divider-icon"><i class="fas fa-tractor"></i></div>
+                    <span class="section-divider-title">Farm Details</span>
+                    <div class="section-divider-line"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label" for="location">Location / Village <span class="optional-badge">optional</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-map-marker-alt field-icon"></i>
+                            <input class="field-input" type="text" id="location" name="location" placeholder="e.g. Nashik, Maharashtra" />
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" for="farm_size">Farm Size (acres) <span class="optional-badge">optional</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-ruler-combined field-icon"></i>
+                            <input class="field-input" type="number" step="0.1" id="farm_size" name="farm_size" placeholder="e.g. 4.5" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label" for="soil_type">Soil Type <span class="optional-badge">optional</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-mountain field-icon"></i>
+                            <select class="field-select" id="soil_type" name="soil_type">
+                                <option value="">Select soil type</option>
+                                <option value="Clay">Clay</option>
+                                <option value="Sandy">Sandy</option>
+                                <option value="Loamy">Loamy</option>
+                                <option value="Silt">Silt</option>
+                                <option value="Peaty">Peaty</option>
+                                <option value="Chalky">Chalky</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" for="water_availabilty">Water Availability <span class="optional-badge">optional</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-tint field-icon"></i>
+                            <select class="field-select" id="water_availabilty" name="water_availabilty">
+                                <option value="">Select availability</option>
+                                <option value="High">High (canal / well)</option>
+                                <option value="Medium">Medium (seasonal)</option>
+                                <option value="Low">Low (rain-fed)</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Crop History -->
+                <div class="section-divider">
+                    <div class="section-divider-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="section-divider-title">Crop History</span>
+                    <div class="section-divider-line"></div>
+                </div>
+
+                <div class="form-row single">
+                    <div class="field-group">
+                        <label class="field-label" for="prev_crop">Previous Crop Grown <span class="optional-badge">optional</span></label>
+                        <div class="field-wrap">
+                            <i class="fas fa-leaf field-icon"></i>
+                            <input class="field-input" type="text" id="prev_crop" name="prev_crop" placeholder="e.g. Wheat, Rice, Sugarcane" />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-check-circle"></i> Create My Account
+                </button>
+
+            </form>
+
+            <div class="form-footer">
+                Already have an account? <a href="/login">Login</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Password toggle
+        const pwdInput  = document.getElementById('password');
+        const pwdToggle = document.getElementById('pwdToggle');
+        const pwdIcon   = document.getElementById('pwdIcon');
+
+        pwdToggle.addEventListener('click', () => {
+            const hide = pwdInput.type === 'password';
+            pwdInput.type = hide ? 'text' : 'password';
+            pwdIcon.className = hide ? 'fas fa-eye-slash' : 'fas fa-eye';
+        });
+
+        // Live progress bar & step highlighting
+        const fields = document.querySelectorAll('.field-input, .field-select');
+        const totalFields = fields.length;
+
+        const stepRanges = [
+            { ids: ['name','email','password','phone'], stepEl: 's1' },
+            { ids: ['location','farm_size','soil_type','water_availabilty'], stepEl: 's2' },
+            { ids: ['prev_crop'], stepEl: 's3' }
+        ];
+
+        function updateProgress() {
+            let filled = 0;
+            fields.forEach(f => { if (f.value.trim()) filled++; });
+            const pct = Math.max(10, Math.round((filled / totalFields) * 100));
+            document.getElementById('progressFill').style.width = pct + '%';
+
+            // Update left panel steps
+            stepRanges.forEach((range, i) => {
+                const el = document.getElementById(range.stepEl);
+                const anyFilled = range.ids.some(id => {
+                    const f = document.getElementById(id);
+                    return f && f.value.trim();
+                });
+                const allFilled = range.ids.filter(id => {
+                    const f = document.getElementById(id);
+                    return f && f.required;
+                }).every(id => {
+                    const f = document.getElementById(id);
+                    return f && f.value.trim();
+                });
+
+                el.classList.remove('active', 'done');
+                if (allFilled && anyFilled) el.classList.add('done');
+                else if (anyFilled) el.classList.add('active');
+            });
+        }
+
+        fields.forEach(f => f.addEventListener('input', updateProgress));
+    </script>
+
+</body>
+</html>

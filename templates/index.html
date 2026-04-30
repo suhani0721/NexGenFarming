@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisan AI - Smart Farming Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --soil: #2D1B0E;
+            --bark: #5C3D1E;
+            --wheat: #D4A853;
+            --sprout: #4A7C3F;
+            --leaf: #6BAF55;
+            --sky: #E8F4E8;
+            --cream: #FAF6F0;
+            --mist: #F2EDE4;
+            --text: #1A1208;
+            --text-muted: #7A6248;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 5%;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(250, 246, 240, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(93, 61, 30, 0.1);
+            transition: box-shadow 0.3s;
+        }
+
+        nav.scrolled { box-shadow: 0 4px 24px rgba(45, 27, 14, 0.08); }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--soil);
+        }
+
+        .nav-logo-icon {
+            width: 36px; height: 36px;
+            background: var(--sprout);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .nav-brand-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-brand-name span { color: var(--sprout); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover { background: var(--mist); color: var(--soil); }
+
+        .btn-nav-cta {
+            background: var(--sprout) !important;
+            color: white !important;
+            padding: 9px 22px !important;
+            border-radius: 10px !important;
+        }
+
+        .btn-nav-cta:hover { background: #3d6b34 !important; transform: translateY(-1px); }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: var(--soil);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 100px 5% 60px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                url('https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
+                center/cover no-repeat;
+            transform: scale(1.05);
+            transition: transform 8s ease-out;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(45, 27, 14, 0.82) 0%,
+                rgba(74, 124, 63, 0.55) 60%,
+                rgba(45, 27, 14, 0.4) 100%
+            );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 680px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #d4e8c2;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 7px 16px;
+            border-radius: 100px;
+            margin-bottom: 28px;
+            backdrop-filter: blur(8px);
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero-badge i { color: var(--wheat); }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+            font-weight: 900;
+            color: white;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            animation: fadeUp 0.7s 0.1s ease both;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--wheat);
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.78);
+            line-height: 1.7;
+            margin-bottom: 40px;
+            font-weight: 300;
+            max-width: 520px;
+            animation: fadeUp 0.7s 0.2s ease both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            animation: fadeUp 0.7s 0.3s ease both;
+        }
+
+        .btn-primary-cta {
+            background: var(--leaf);
+            color: white;
+            text-decoration: none;
+            padding: 15px 32px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s;
+            box-shadow: 0 4px 20px rgba(107, 175, 85, 0.4);
+        }
+
+        .btn-primary-cta:hover {
+            background: #5a9e46;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(107, 175, 85, 0.5);
+        }
+
+        .btn-secondary-cta {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
+            padding: 15px 32px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.25s;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-secondary-cta:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero-stats {
+            position: absolute;
+            right: 5%;
+            bottom: 80px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeLeft 0.8s 0.4s ease both;
+        }
+
+        .stat-pill {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(12px);
+            padding: 14px 22px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-pill-icon {
+            width: 40px; height: 40px;
+            background: var(--sprout);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .stat-pill-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+        }
+
+        .stat-pill-label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 2px;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            animation: fadeUp 1s 0.8s ease both;
+        }
+
+        .scroll-hint-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+            animation: scrollPulse 2s infinite;
+        }
+
+        /* ── FEATURES ── */
+        .features {
+            padding: 100px 5%;
+            background: var(--cream);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--sprout);
+            background: rgba(74, 124, 63, 0.08);
+            padding: 6px 16px;
+            border-radius: 100px;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            color: var(--soil);
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid rgba(93, 61, 30, 0.08);
+            border-radius: 20px;
+            padding: 36px 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--sprout), var(--wheat));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 48px rgba(45, 27, 14, 0.1);
+            border-color: rgba(93, 61, 30, 0.15);
+        }
+
+        .feature-card:hover::before { transform: scaleX(1); }
+
+        .feature-icon-wrap {
+            width: 56px; height: 56px;
+            background: rgba(74, 124, 63, 0.08);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            color: var(--sprout);
+            margin-bottom: 24px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon-wrap {
+            background: var(--sprout);
+            color: white;
+        }
+
+        .feature-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--soil);
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* ── CTA STRIP ── */
+        .cta-strip {
+            margin: 0 5% 100px;
+            background: linear-gradient(135deg, var(--soil) 0%, var(--bark) 50%, var(--sprout) 100%);
+            border-radius: 28px;
+            padding: 72px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-strip::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-strip-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .cta-strip-text p {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .cta-strip-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta-white {
+            background: white;
+            color: var(--soil);
+            text-decoration: none;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+
+        .btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+        .btn-cta-outline {
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.35);
+            transition: all 0.25s;
+        }
+
+        .btn-cta-outline:hover { background: rgba(255,255,255,0.1); }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--soil);
+            padding: 40px 5%;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .footer-brand i { color: var(--leaf); }
+
+        footer p {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeLeft {
+            from { opacity: 0; transform: translateX(24px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.4; transform: scaleY(1); }
+            50%       { opacity: 1;   transform: scaleY(1.3); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 68px; left: 0; right: 0; background: var(--cream); padding: 20px 5%; border-bottom: 1px solid var(--mist); }
+            .nav-links.open { display: flex; }
+            .nav-toggle { display: block; }
+            .hero-stats { display: none; }
+            .cta-strip { padding: 48px 32px; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <a class="nav-brand" href="/">
+            <div class="nav-logo-icon"><i class="fas fa-seedling"></i></div>
+            <span class="nav-brand-name">Kisan <span>AI</span></span>
+        </a>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/login">Login</a></li>
+            <li><a href="/signup" class="btn-nav-cta">Get Started</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-leaf"></i>
+                AI-Powered Farming
+            </div>
+            <h1>Your Farm.<br><em>Smarter</em> Every Season.</h1>
+            <p>From sowing to harvest — personalised AI guidance on crops, irrigation, fertilizers, and market prices, right in your hands.</p>
+            <div class="hero-cta">
+                <a href="/signup" class="btn-primary-cta">
+                    <i class="fas fa-seedling"></i> Start for Free
+                </a>
+                <a href="/login" class="btn-secondary-cta">Login</a>
+            </div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-pill">
+                <div class="stat-pill-icon"><i class="fas fa-users"></i></div>
+                <div>
+                    <div class="stat-pill-num">50K+</div>
+                    <div class="stat-pill-label">Farmers helped</div>
+                </div>
+            </div>
+            <div class="stat-pill">
+                <div class="stat-pill-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div>
+                    <div class="stat-pill-num">18</div>
+                    <div class="stat-pill-label">States covered</div>
+                </div>
+            </div>
+            <div class="stat-pill">
+                <div class="stat-pill-icon"><i class="fas fa-language"></i></div>
+                <div>
+                    <div class="stat-pill-num">12</div>
+                    <div class="stat-pill-label">Languages</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-hint">
+            <div class="scroll-hint-line"></div>
+            Scroll
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="section-header reveal">
+            <div class="section-tag"><i class="fas fa-star"></i> What We Offer</div>
+            <h2>Everything Your Farm Needs</h2>
+            <p>Built for Indian farmers — accessible, accurate, and always learning from your land.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <div class="feature-icon-wrap"><i class="fas fa-tractor"></i></div>
+                <h4>Crop Selection</h4>
+                <p>AI recommends the best crop for your soil type, local weather, and region — so every season starts right.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon-wrap"><i class="fas fa-tint"></i></div>
+                <h4>Irrigation Advice</h4>
+                <p>Know exactly when and how much to water, based on real-time weather data and your crop's growth stage.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon-wrap"><i class="fas fa-flask"></i></div>
+                <h4>Fertilizer Guidance</h4>
+                <p>Get the right fertilizer at the right time — customised for your soil health and the stage of your crop.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon-wrap"><i class="fas fa-chart-line"></i></div>
+                <h4>Market Updates</h4>
+                <p>Stay ahead with mandi prices, demand trends, and government scheme updates relevant to your crops.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon-wrap"><i class="fas fa-microphone-alt"></i></div>
+                <h4>Voice Interface</h4>
+                <p>Ask questions in Hindi, Marathi, Punjabi, and more — no need to type, just speak naturally.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon-wrap"><i class="fas fa-history"></i></div>
+                <h4>Continuous Memory</h4>
+                <p>We remember your farm's history and give stage-wise advice that evolves with your crops over time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA STRIP -->
+    <div class="cta-strip reveal">
+        <div class="cta-strip-text">
+            <h3>Ready to grow smarter?</h3>
+            <p>Join thousands of farmers already using Kisan AI every day.</p>
+        </div>
+        <div class="cta-strip-actions">
+            <a href="/signup" class="btn-cta-white">Create Free Account</a>
+            <a href="/login" class="btn-cta-outline">Login</a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+            <i class="fas fa-seedling"></i> Kisan AI
+        </div>
+        <p>&copy; 2025 Kisan AI — Empowering Farmers with AI</p>
+    </footer>
+
+    <script>
+        // Scroll shadow on nav
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
+        });
+
+        // Mobile nav toggle
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // Subtle hero parallax
+        window.addEventListener('scroll', () => {
+            const y = window.scrollY;
+            document.getElementById('heroBg').style.transform = `scale(1.05) translateY(${y * 0.15}px)`;
+        });
+
+        // Reveal on scroll
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('visible'), i * 80);
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        reveals.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
